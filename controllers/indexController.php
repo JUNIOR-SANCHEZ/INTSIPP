@@ -8,8 +8,11 @@ class indexController extends Controller {
     }
 
     public function index() {
-//        $this->_view->assign("titulo","FUNDACION");
-        $this->_view->renderizar('index');
+        
+//        print_r($this->_view->getLayoutPosition());
+        $this->_view->assign("titulo","INTSIPP");
+        
+        $this->_view->renderizar('index',"inicio");
     }
 
 }

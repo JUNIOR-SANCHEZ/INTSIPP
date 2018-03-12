@@ -3,11 +3,12 @@
 class tarjetasController extends Controller {
 
     private $_pdf;
-
+    private $_template="startBootstrap";
     public function __construct() {
         parent::__construct();
-        $this->getLibreria("fpdf");
-        $this->getLibreria("PHPExcel/IOFactory");
+//        $this->getLibreria("fpdf");
+//        $this->getLibreria("PHPExcel/IOFactory");
+        $this->_view->setTemplate($this->_template);
     }
 
     public function index() {
@@ -19,7 +20,7 @@ class tarjetasController extends Controller {
             if (!$this->getInt("ancho") && !$this->getInt("alto")) {
                 if (!$this->getText("formato")) {
                     $this->_view->assign("_error", "Escoja un formato");
-                    $this->_view->renderizar("index", "tarjeta");
+                    $this->_view->renderizar("index", "tarjetas");
                     exit;
                 }
             }

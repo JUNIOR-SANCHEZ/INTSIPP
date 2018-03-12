@@ -9,13 +9,61 @@
 class pruebasController extends Controller {
 
     private $_exel;
-
+    private $_pruebas;
+    private $_template="startBootstrap";
+    
     public function __construct() {
         parent::__construct();
         $this->getLibreria("PHPExcel/IOFactory");
+        $this->_pruebas = $this->loadModel("pruebas");
+        $this->_view->setTemplate($this->_template);
+        
+    }
+    
+
+    public function index($pagina=false) {
+        
+        
+        if(!$this->filterInt($pagina)){
+            $pagina = false;
+        } else {
+            $pagina = (int)$pagina;
+        }
+        
+        $paginador = new Paginador();
+        $this->_view->assign("titulo","pruebas");
+        $this->_view->assign("datos",$paginador->paginar($this->_pruebas->view(),$pagina));
+        $this->_view->assign("paginacion",$paginador->getView("prueba","pruebas/index"));
+        $this->_view->renderizar("index","pruebas");
+        
+        
+    }
+    public function paginacionAjax($pagina=false) {
+              
+        $paginador = new Paginador();
+        
+        $this->_view->setJs(array("prueba"));
+        $this->_view->assign("titulo","pruebas");
+        $this->_view->assign("datos",$paginador->paginar($this->_pruebas->view(),$pagina));
+        $this->_view->assign("paginacion",$paginador->getView("paginacion_ajax"));
+        $this->_view->renderizar("ajaxpaginacion","pruebas");
+        
+        
+    }
+    
+    public function pruebaAjax(){
+        $pagina = $this->getInt('pagina');
+        $paginador = new Paginador();
+        
+        $this->_view->setJs(array("prueba"));
+        $this->_view->assign("titulo","pruebas");
+        $this->_view->assign("datos",$paginador->paginar($this->_pruebas->view(),$pagina));
+        $this->_view->assign("paginacion",$paginador->getView("paginacion_ajax"));
+        $this->_view->renderizar("ajax/pruebas","pruebas",true);
     }
 
-    public function index() {
+
+    public function phpexcel(){
         $nombreArchivo = ROOT . 'public' . DS . 'xlsx' . DS . 'ejemplo.xlsx';
 
         $this->_exel = PHPEXCEL_IOFactory::load($nombreArchivo);
@@ -39,5 +87,29 @@ class pruebasController extends Controller {
             echo '</tr>';
         }
     }
+    
+    public function qr(){
+        
+       $this->getLibreria("phpqrcode/qrlib");
+        $filename = QR_CODE. 'test.png';
+	
+	$tamanio = 15;
+	$level = 'H';
+	$frameSize = 1;
+	$contenido = 'hola';
 
+	QRcode::png($contenido, $filename, $level, $tamanio, $frameSize);
+	
+        $this->_view->assign("qr",$filename);
+        
+//        $this->_view->renderizar("index","prueva");
+        
+        
+        
+    }
+    
+    public function viewtemplate(){
+        $this->_view->setTemplate("startBootstrap");
+        $this->_view->renderizar("pruebas","pruebas");
+    }
 }

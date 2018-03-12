@@ -2,18 +2,34 @@
 
 abstract class Controller {
 
+    private $_registry;
     protected $_view;
+    protected $_acl;
+    protected $_request;
 
     public function __construct() {
-        $this->_view = new View(new Request());
+
+        $this->_registry = Registry::getInstancia();
+        $this->_acl = $this->_registry->_acl;
+        $this->_request = $this->_registry->_request;
+        $this->_view = new View($this->_request, $this->_acl);
     }
 
     abstract public function index();
 
-    protected function loadModel($modelo) {
+    protected function loadModel($modelo, $modulo = false) {
         $modelo = $modelo . "Model";
 
         $rutaModelo = ROOT . "models" . DS . $modelo . '.php';
+
+        if (!$modulo) {
+            $modulo = $this->_request->getModulo();
+        }
+        if ($modulo) {
+            if ($modulo != "default") {
+                $rutaModelo = ROOT . "modules" . DS . $modulo . DS . "models" . DS . $modelo . '.php';
+            }
+        }
 
         if (is_readable($rutaModelo)) {
             require_once $rutaModelo;
@@ -25,10 +41,13 @@ abstract class Controller {
     }
 
     protected function getLibreria($libreria) {
-        $rutaLibreria = ROOT . DS . "libs" . DS . $libreria . ".php";
+        $rutaLibreria = ROOT . "libs" . DS . $libreria . ".php";
+
         if (is_readable($rutaLibreria)) {
             require_once $rutaLibreria;
         } else {
+            echo $rutaLibreria;
+            exit;
             throw new Exception("Error de libreria");
         }
     }
@@ -59,8 +78,9 @@ abstract class Controller {
             return 0;
         }
     }
-    public function getFile($clave){
-        if(isset($_FILES[$clave])){
+
+    public function getFile($clave) {
+        if (isset($_FILES[$clave])) {
             return $_FILES[$clave];
         }
     }

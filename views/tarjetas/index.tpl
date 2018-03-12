@@ -1,11 +1,10 @@
                    
 
-<div class="container">
+<div class="row">
     <h1>Generador de certificados</h1>
-    <div class="row">
         <form role="form" method="post" action="{$_layoutParams.root}tarjetas" enctype="multipart/form-data" />
             <input type="hidden" name="enviar" value="1" />
-            <div class="col-md-6">
+            <div class="col-lg-6">
                 <h3>General</h3>
                 <div class="form-group">
                     <label for="formato">Formato</label>
@@ -22,7 +21,7 @@
                         <div class="col-md-6">
                             <div class="row">
                                 <div class="col-xs-6">
-                                    <div class="input-group">
+                                    <div class="input-group-targ">
                                         <input type="text" class="form-control" name="ancho" id="ancho" placeholder="ancho" {if isset($datos)} value="{$datos.ancho}" {/if} />
                                         <div class="input-group-addon">mm</div>
                                     </div>
@@ -55,7 +54,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-lg-6">
 
                 <h3>Texto</h3>
                 <div class="form-group">
@@ -127,8 +126,7 @@
                 </div>
             </div>
         </form>
-    </div>
     
-</div>
                    
                     
+</div>
